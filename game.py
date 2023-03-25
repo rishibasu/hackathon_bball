@@ -51,6 +51,7 @@ class ball:
             self.speed_x *= -1
         if self.y < self.radius or self.y > HEIGHT - self.radius:
             self.speed_y *= -1
+    
 
 
 # Create class for the players
@@ -75,19 +76,34 @@ class player:
         self.y += self.speed_y
 
         # Check for collision with walls
-        if self.x < self.radius or self.x > WIDTH - self.radius:
+        if self.x < self.radius*2 or self.x > WIDTH - self.radius - 5:
             self.speed_x *= -1
-        if self.y < self.radius or self.y > HEIGHT - self.radius:
+        if self.y < self.radius*2 or self.y > HEIGHT - self.radius - 5:
             self.speed_y *= -1
+
+    def decide_turnover(self, player):
+        if random.choice([1,2]) == 1:
+            ball.carrier = self
+        else:
+            ball.carrier = player
+           # carrying_ball(player, ball)
+        ball.carried = True
 
     def carrying_ball(self, ball):
         dist = ((self.x - ball.x)**2 + (self.y - ball.y)**2)**0.5
 
         if dist < self.radius + ball.radius:
-#            print("TOUCHED")
-            ball.speed_x = self.speed_x
-            ball.speed_y = self.speed_y
-    
+            if ball.carried == False or ball.carrier == self:
+                ball.carried = True
+                ball.carrier = self
+                ball.speed_x = self.speed_x
+                ball.speed_y = self.speed_y
+                ball.x = self.x
+                ball.y = self.y
+            else:
+                decide_turnover(self, ball.carrier)
+             
+
 """
     def check_collision(self, other_ball):
         # Calculate distance between centers of balls
@@ -119,10 +135,10 @@ class player:
             
 
 # Create the balls
-red_player = player(100, 100, 5, RED)
-blue_player = player(700, 500, 10, BLUE)
+red_player = player(100, 100, 40, RED)
+blue_player = player(700, 500, 40, BLUE)
 
-# perhaps the ball should be different
+#perhaps the ball should be different
 orange_ball = ball()
 
 # Set up game loop
@@ -138,13 +154,14 @@ while True:
 
     # Move the balls
     red_player.move()
-    #blue_player.move()
+    blue_player.move()
     orange_ball.move()
 
     # Check for collisions between balls
     #red_ball.check_collision(blue_ball)
     #blue_ball.check_collision(red_ball)
     red_player.carrying_ball(orange_ball)
+    blue_player.carrying_ball(orange_ball)
 
     # If the orange ball is being carried, move it with the carrying ball
     if hasattr(red_player, 'orange_carried') and red_player.orange_carried:
@@ -155,7 +172,7 @@ while True:
         orange_ball.y = blue_ball.y
 
     # Draw the background and the balls
-    # WIN.fill(background_image)
+    #WIN.fill(background_image)
     WIN.blit(background_image, (0, 0))
     red_player.draw()
     blue_player.draw()
