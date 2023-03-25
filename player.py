@@ -5,7 +5,7 @@ import numpy as np
 
 # Define the Player class
 class Player:
-    def __init__(self, screen_width, screen_height, color, name, ):
+    def __init__(self, screen_width, screen_height, color, name):
         self.radius = 15
         self.x = random.randint(self.radius, screen_width - self.radius)
         self.y = random.randint(self.radius, screen_height - self.radius)
