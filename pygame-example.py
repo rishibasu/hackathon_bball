@@ -1,9 +1,7 @@
 import pygame
 import math
 import random
-import ball
-
-
+import player
 
 
 # Initialize Pygame
@@ -25,12 +23,12 @@ def random_color_tuple():
     return (random.randint(0, 255), random.randint(0, 255), random.randint(0, 255))
 
 # Set up the balls
-balls = [
-    ball.Ball(screen_width, screen_height, random_color_tuple()),
-    ball.Ball(screen_width, screen_height, random_color_tuple()),
-    ball.Ball(screen_width, screen_height, random_color_tuple()),
-    ball.Ball(screen_width, screen_height, random_color_tuple()),
-    ball.Ball(screen_width, screen_height, random_color_tuple()) 
+players = [
+    player.Player(screen_width, screen_height, random_color_tuple()),
+    player.Player(screen_width, screen_height, random_color_tuple()),
+    player.Player(screen_width, screen_height, random_color_tuple()),
+    player.Player(screen_width, screen_height, random_color_tuple()),
+    player.Player(screen_width, screen_height, random_color_tuple()) 
 ]
 
 # Set up the game loop
@@ -42,16 +40,16 @@ while running:
             running = False
     
     # Move and bounce the balls
-    for ball in balls:
-        ball.move()
-        ball.bounce(screen_width, screen_height)
+    for player in players:
+        player.move()
+        player.bounce(screen_width, screen_height)
     
     # Draw the background image
     screen.blit(background_image, (0, 0))
     
     # Draw the balls
-    for ball in balls:
-        ball.draw(screen)
+    for player in players:
+        player.draw(screen)
     
     # Update the screen
     pygame.display.flip()

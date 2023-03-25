@@ -2,8 +2,8 @@ import random
 import math
 import pygame
 
-# Define the Ball class
-class Ball:
+# Define the Player class
+class Player:
     def __init__(self, screen_width, screen_height, color):
         self.radius = 15
         self.x = random.randint(self.radius, screen_width - self.radius)
