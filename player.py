@@ -25,7 +25,6 @@ class Player:
         for i, name in enumerate(ndata, start=1):
             if (n == name):
                 self.nbapos, self.age, self.tm, self.g, self.mp, self.per, self.ts, self.tsp, self.ftr= np.genfromtxt('data.csv', delimiter=',', skip_header=1, max_rows=1, usecols=(1,2,3,4,5,6,7,8,9), unpack=True)
-                break;
 
     #
     def takeShot(self, basket_class):
