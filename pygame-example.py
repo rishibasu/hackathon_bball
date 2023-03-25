@@ -3,6 +3,9 @@ import math
 import random
 import player
 
+# Helper function to generate a random color tuple
+def random_color_tuple():
+    return (random.randint(0, 255), random.randint(0, 255), random.randint(0, 255))
 
 # Initialize Pygame
 pygame.init()
@@ -11,6 +14,8 @@ pygame.init()
 background_image = pygame.image.load("basketball-background.jpeg")
 screen_width, screen_height = background_image.get_size()
 
+
+
 # Set up the screen
 screen = pygame.display.set_mode((screen_width, screen_height))
 pygame.display.set_caption("My Game")
@@ -18,11 +23,8 @@ pygame.display.set_caption("My Game")
 # Set up the clock
 clock = pygame.time.Clock()
 
-# Helper function to generate a random color tuple
-def random_color_tuple():
-    return (random.randint(0, 255), random.randint(0, 255), random.randint(0, 255))
 
-# Set up the balls
+# Set up the players
 players = [
     player.Player(screen_width, screen_height, random_color_tuple()),
     player.Player(screen_width, screen_height, random_color_tuple()),
@@ -39,7 +41,7 @@ while running:
         if event.type == pygame.QUIT:
             running = False
     
-    # Move and bounce the balls
+    # Move and bounce the players
     for player in players:
         player.move()
         player.bounce(screen_width, screen_height)
@@ -47,7 +49,22 @@ while running:
     # Draw the background image
     screen.blit(background_image, (0, 0))
     
-    # Draw the balls
+    # Test: draw a rectangle
+    rect_width = 100
+    rect_height = 0.764 * screen_height
+    rect_x = 0
+    rect_y = 0.118 * screen_height
+    rect_color = (0, 255, 0, 0)
+
+    # Create the rectangle object
+    rect = pygame.Rect(rect_x, rect_y, rect_width, rect_height)
+
+    # Draw the rectangle onto the screen
+    pygame.draw.rect(screen, rect_color, rect)
+
+
+    
+    # Draw the players
     for player in players:
         player.draw(screen)
     
