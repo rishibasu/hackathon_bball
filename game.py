@@ -122,7 +122,7 @@ class player:
 red_player = player(100, 100, 5, RED)
 blue_player = player(700, 500, 10, BLUE)
 
-#perhaps the ball should be different
+# perhaps the ball should be different
 orange_ball = ball()
 
 # Set up game loop
@@ -155,7 +155,7 @@ while True:
         orange_ball.y = blue_ball.y
 
     # Draw the background and the balls
-    #WIN.fill(background_image)
+    # WIN.fill(background_image)
     WIN.blit(background_image, (0, 0))
     red_player.draw()
     blue_player.draw()
