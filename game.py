@@ -47,9 +47,9 @@ class ball:
         self.x += self.speed_x
         self.y += self.speed_y
     # Check for collision with walls
-        if self.x < self.radius or self.x > WIDTH - self.radius:
+        if self.x < self.radius*4 or self.x > WIDTH - self.radius - 15:
             self.speed_x *= -1
-        if self.y < self.radius or self.y > HEIGHT - self.radius:
+        if self.y < self.radius*4 or self.y > HEIGHT - self.radius - 15:
             self.speed_y *= -1
     
 
@@ -101,7 +101,7 @@ class player:
                 ball.x = self.x
                 ball.y = self.y
             else:
-                decide_turnover(self, ball.carrier)
+                self.decide_turnover(ball.carrier)
              
 
 """
@@ -156,6 +156,7 @@ while True:
     red_player.move()
     blue_player.move()
     orange_ball.move()
+
 
     # Check for collisions between balls
     #red_ball.check_collision(blue_ball)
