@@ -50,7 +50,7 @@ while running:
     screen.blit(background_image, (0, 0))
     
     # Test: draw a rectangle
-    rect_width = 100
+    rect_width = 0.086 * screen_width
     rect_height = 0.764 * screen_height
     rect_x = 0
     rect_y = 0.118 * screen_height
