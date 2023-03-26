@@ -1,5 +1,7 @@
 import pygame
 import random
+import numpy as np
+import math
 
 # Initialize pygame
 pygame.init()
@@ -27,6 +29,11 @@ ORANGE = (255, 165, 0)
 BALL_RADIUS = 20
 #BALL_SPEED = 5
 
+# Basket Class
+class basket: 
+    def __init__(self, x, y):
+        self.x = x
+        self.y = y
 
 
 #create class for the ball
@@ -65,15 +72,56 @@ class player:
         #self.speed_y = random.randint(-BALL_SPEED, BALL_SPEED)
         self.speed_x = speed
         self.speed_y = speed
+        self.angle = random.uniform(0, 2 * math.pi)
         self.orange_carried = False
         self.carrying = False
 
+    def assignPlayer(self, name):
+        n = self.name
+        ndata = np.gettext("data/nba2021_advanced.csv", delimiter=',', usecols=(0,))
+        for i, name in enumerate(ndata, start=1):
+            if (n == name):
+                self.nbapos, 
+                self.age, 
+                self.tm, 
+                self.g, 
+                self.mp, 
+                self.per, 
+                self.ts, 
+                self.tsp, 
+                self.ftr = np.genfromtxt('data.csv', delimiter=',', skip_header=1, max_rows=1, usecols=(1,2,3,4,5,6,7,8,9), unpack=True)
+                
+    def takeShot(self, basket_class):
+        d = math.sqrt((self.x - basket.x)**2 + (self.y - basket.y)**2)
+        #In pixels
+        if (d < 40): return 0.6
+        elif (d < 70): return 0.575
+        elif (d < 104): return 0.525
+        elif (d < 115): return 0.475
+        elif (d < 130): return 0.425
+        if (self.x < 125) or (self.x > 1440-125):
+            if (d < 190):
+                return 0.375
+            elif (d < 270): return 0.425
+            else: return 0.375
+        else:
+            if (d < 270):
+                return 0.425
+            elif (d < 400): return 0.375
+            else: return 0.325
+            
     def draw(self):
         pygame.draw.circle(WIN, self.color, (self.x, self.y), self.radius)
-
+    """
+    def bounce(self, screen_width, screen_height):
+        if self.x - self.radius < 0 or self.x + self.radius > screen_width:
+            self.angle = math.pi - self.angle
+        if self.y - self.radius < 0 or self.y + self.radius > screen_height:
+            self.angle = -self.angle
+    """
     def move(self):
-        self.x += self.speed_x
-        self.y += self.speed_y
+        self.x += self.speed_x * math.cos(self.angle)
+        self.y += self.speed_y * math.sin(self.angle)
 
         # Check for collision with walls
         if self.x < self.radius*2 or self.x > WIDTH - self.radius - 5:
@@ -104,6 +152,65 @@ class player:
                 self.decide_turnover(ball.carrier)
              
 
+
+            
+
+# Create the balls
+red_player = player(100, 100, 40, RED)
+blue_player = player(700, 500, 40, BLUE)
+
+#perhaps the ball should be different
+orange_ball = ball()
+
+# Set up game loop
+clock = pygame.time.Clock()
+while True:
+    clock.tick(30)
+
+    # Handle events
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            pygame.quit()
+            quit()
+
+    # Move the balls
+    red_player.move()
+    blue_player.move()
+    orange_ball.move()
+
+
+    # Check for collisions between players and balls
+    #red_ball.check_collision(blue_ball)
+    #blue_ball.check_collision(red_ball)
+    red_player.carrying_ball(orange_ball)
+    blue_player.carrying_ball(orange_ball)
+
+    # If the orange ball is being carried, move it with the carrying ball
+    if hasattr(red_player, 'orange_carried') and red_player.orange_carried:
+        orange_ball.x = red_player.x
+        orange_ball.y = red_player.y
+    elif hasattr(blue_player, 'orange_carried') and blue_player.orange_carried:
+        orange_ball.x = blue_player.x
+        orange_ball.y = blue_player.y
+
+    # Draw the background and the balls
+    #WIN.fill(background_image)
+    WIN.blit(background_image, (0, 0))
+    red_player.draw()
+    blue_player.draw()
+    orange_ball.draw()
+
+    # Update the screen
+    pygame.display.update()
+
+
+
+
+
+
+
+
+
 """
     def check_collision(self, other_ball):
         # Calculate distance between centers of balls
@@ -131,53 +238,3 @@ class player:
             elif other_ball.color == ORANGE:
                 self.orange_carried = True
 """
-
-            
-
-# Create the balls
-red_player = player(100, 100, 40, RED)
-blue_player = player(700, 500, 40, BLUE)
-
-#perhaps the ball should be different
-orange_ball = ball()
-
-# Set up game loop
-clock = pygame.time.Clock()
-while True:
-    clock.tick(60)
-
-    # Handle events
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            pygame.quit()
-            quit()
-
-    # Move the balls
-    red_player.move()
-    blue_player.move()
-    orange_ball.move()
-
-
-    # Check for collisions between balls
-    #red_ball.check_collision(blue_ball)
-    #blue_ball.check_collision(red_ball)
-    red_player.carrying_ball(orange_ball)
-    blue_player.carrying_ball(orange_ball)
-
-    # If the orange ball is being carried, move it with the carrying ball
-    if hasattr(red_player, 'orange_carried') and red_player.orange_carried:
-        orange_ball.x = red_ball.x
-        orange_ball.y = red_ball.y
-    elif hasattr(blue_player, 'orange_carried') and blue_player.orange_carried:
-        orange_ball.x = blue_ball.x
-        orange_ball.y = blue_ball.y
-
-    # Draw the background and the balls
-    #WIN.fill(background_image)
-    WIN.blit(background_image, (0, 0))
-    red_player.draw()
-    blue_player.draw()
-    orange_ball.draw()
-
-    # Update the screen
-    pygame.display.update()
