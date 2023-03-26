@@ -137,11 +137,11 @@ class player:
         if self.y < self.radius*2 or self.y > HEIGHT - self.radius - 5:
             self.speed_y *= -1
         """
-        self.x = WIDTH // 2 + int(WIDTH // 2 * math.cos(self.angle))
-        self.y = HEIGHT // 2 + int(HEIGHT // 2 * math.sin(self.angle))
+        self.x = int(WIDTH // 2 * math.cos(self.angle))
+        self.y = int(HEIGHT // 2 * math.sin(self.angle))
         self.angle += direction * math.pi / 180
-        self.x += int(wave_amplitude * math.sin(wave_frequency * self.x + wave_offset))
-        self.y += int(wave_amplitude * math.sin(wave_frequency * self.y + wave_offset))
+        # self.x += int(wave_amplitude * math.sin(wave_frequency * self.x + wave_offset))
+        # self.y += int(wave_amplitude * math.sin(wave_frequency * self.y + wave_offset))
         
     player_direction_change_event = pygame.USEREVENT + 1
     pygame.time.set_timer(player_direction_change_event, random.randint(5000, 100000))
