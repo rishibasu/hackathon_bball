@@ -35,9 +35,16 @@ class basket:
         self.x = x
         self.y = y
 
+# Screen Class
+class Screen:
+    def __init__(self, width, height):
+        self.width = width
+        self.height = height
 
-#create class for the ball
-class ball:
+screen = Screen(WIDTH, HEIGHT)
+
+# Ball Class
+class ball():
     def __init__(self):
         self.x = 749
         self.y = 456
@@ -54,9 +61,9 @@ class ball:
         self.x += self.speed_x
         self.y += self.speed_y
     # Check for collision with walls
-        if self.x < self.radius*4 or self.x > WIDTH - self.radius - 15:
+        if self.x < self.radius * 4 or self.x > WIDTH - self.radius - 15:
             self.speed_x *= -1
-        if self.y < self.radius*4 or self.y > HEIGHT - self.radius - 15:
+        if self.y < self.radius * 4 or self.y > HEIGHT - self.radius - 15:
             self.speed_y *= -1
     
 
@@ -68,11 +75,8 @@ class player:
         self.y = y
         self.color = color
         self.radius = BALL_RADIUS
-        #self.speed_x = random.randint(-BALL_SPEED, BALL_SPEED)
-        #self.speed_y = random.randint(-BALL_SPEED, BALL_SPEED)
-        self.speed_x = speed
-        self.speed_y = speed
-        self.angle = random.uniform(0, 2 * math.pi)
+        self.angle = random.uniform(0, math.pi)
+        self.speed = speed
         self.orange_carried = False
         self.carrying = False
 
@@ -85,8 +89,8 @@ class player:
                 self.age, 
                 self.tm, 
                 self.g, 
-                self.mp, 
-                self.per, 
+                self.mp, # market price
+                self.per, # player efficiency rating
                 self.ts, 
                 self.tsp, 
                 self.ftr = np.genfromtxt('data.csv', delimiter=',', skip_header=1, max_rows=1, usecols=(1,2,3,4,5,6,7,8,9), unpack=True)
@@ -120,14 +124,27 @@ class player:
             self.angle = -self.angle
     """
     def move(self):
-        self.x += self.speed_x * math.cos(self.angle)
-        self.y += self.speed_y * math.sin(self.angle)
-
+        direction = random.uniform(-1, 1)
+        wave_amplitude = 50
+        wave_frequency = 0.01
+        wave_offset = random.uniform(0, math.pi * 2)
+        # self.x += self.speed * math.cos(self.angle)
+        # self.y += self.speed * math.sin(self.angle)
+        """
         # Check for collision with walls
         if self.x < self.radius*2 or self.x > WIDTH - self.radius - 5:
             self.speed_x *= -1
         if self.y < self.radius*2 or self.y > HEIGHT - self.radius - 5:
             self.speed_y *= -1
+        """
+        self.x = WIDTH // 2 + int(WIDTH // 2 * math.cos(self.angle))
+        self.y = HEIGHT // 2 + int(HEIGHT // 2 * math.sin(self.angle))
+        self.angle += direction * math.pi / 180
+        self.x += int(wave_amplitude * math.sin(wave_frequency * self.x + wave_offset))
+        self.y += int(wave_amplitude * math.sin(wave_frequency * self.y + wave_offset))
+        
+    player_direction_change_event = pygame.USEREVENT + 1
+    pygame.time.set_timer(player_direction_change_event, random.randint(5000, 100000))
 
     def decide_turnover(self, player):
         if random.choice([1,2]) == 1:
@@ -140,8 +157,8 @@ class player:
     def carrying_ball(self, ball):
         dist = ((self.x - ball.x)**2 + (self.y - ball.y)**2)**0.5
 
-        if dist < self.radius + ball.radius:
-            if ball.carried == False or ball.carrier == self:
+        if dist <= self.radius + ball.radius:
+            if ball.carried == False:
                 ball.carried = True
                 ball.carrier = self
                 ball.speed_x = self.speed_x
@@ -156,8 +173,8 @@ class player:
             
 
 # Create the balls
-red_player = player(100, 100, 40, RED)
-blue_player = player(700, 500, 40, BLUE)
+red_player = player(400, 400, 5, RED)
+blue_player = player(400, 400, 3, BLUE)
 
 #perhaps the ball should be different
 orange_ball = ball()
@@ -165,13 +182,16 @@ orange_ball = ball()
 # Set up game loop
 clock = pygame.time.Clock()
 while True:
-    clock.tick(30)
+    clock.tick(60)
 
     # Handle events
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             pygame.quit()
             quit()
+        elif event.type == player.player_direction_change_event:
+            red_player.angle = random.uniform(0, math.pi)
+            blue_player.angle = random.uniform(0, math.pi)
 
     # Move the balls
     red_player.move()
